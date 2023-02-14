@@ -8,8 +8,12 @@
 ## PROBLEM : Describe the problem
 ##
 ## ALGORITHM : 
-##      1. Write out the algorithm
-## 
+##      1. Ask for bank, return integer
+##      2. Ask for wager. Must be greater than 0, less than or equal to bank. return int.
+##      3. Get tuple of slot results. 3 results, each between 1 and 10
+##      4. Find matches in tuple. Return amount of matching results (3, 2, or 0)
+##      5. Get payout and apply to bank
+##      6. Ask to play again
 ## ERROR HANDLING:
 ##      Any Special Error handling to be noted.  Wager not less than 0. etc
 ##
@@ -23,9 +27,15 @@
 
 def play_again() -> bool:
     ''' Asks the user if they want to play again, returns False if N or NO, and True if Y or YES.  Keeps asking until they respond yes '''
+    ans = input('Do you want to play again? ==> ')
+    while ans not in ('Y', 'YES', 'N', 'NO'):
+        print('You must enter Y/YES/N/NO to continue. Please try again')
+        ans = input('Do you want to play again? ==> ')
+    if ans in ('Y', 'YES'):
+        return True
+     Elif ans in ('N', 'NO'):
+         return False
 
-    return True
-     
 def get_wager(bank : int) -> int:
     ''' Asks the user for a wager chip amount.  Continues to ask if they result is <= 0 or greater than the amount they have '''
 
