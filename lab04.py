@@ -23,42 +23,69 @@
 ########################################################################
 
 #import modules needed
+import random
 
-
-def play_again() -> bool:
+def play_again():
     ''' Asks the user if they want to play again, returns False if N or NO, and True if Y or YES.  Keeps asking until they respond yes '''
     ans = input('Do you want to play again? ==> ')
-    while ans not in ('Y', 'YES', 'N', 'NO'):
+    while ans not in ['Y', 'YES', 'N', 'NO']:
         print('You must enter Y/YES/N/NO to continue. Please try again')
         ans = input('Do you want to play again? ==> ')
-    if ans in ('Y', 'YES'):
+    if ans == 'Y' or ans == 'YES':
         return True
-     Elif ans in ('N', 'NO'):
+    elif ans == 'N' or ans == 'NO':
          return False
 
-def get_wager(bank : int) -> int:
+def get_wager(bank):
     ''' Asks the user for a wager chip amount.  Continues to ask if they result is <= 0 or greater than the amount they have '''
+    gamble = int(input('How many chips do you want to wager? ==> '))
+    while gamble <= 0 or gamble > bank:
+        if gamble <= 0:
+            gamble = int(input('The wager amount must be greater than 0. Please enter again. \nHow many chips do you want to wager? ==> '))
+        elif gamble > bank:
+            print(f'The wager amount cannot be greater than how much you have.  {bank}\nHow many chips do you want to wager? ==> ')
+    return gamble           
 
-    return 1            
-
-def get_slot_results() -> tuple:
+def get_slot_results():
     ''' Returns the result of the slot pull '''
+    a = random.randrange(1, 10, 1)
+    b = random.randrange(1, 10, 1)
+    c = random.randrange(1, 10, 1)
+    return a, b, c
 
-    return 1, 2, 3
-
-def get_matches(reela, reelb, reelc) -> int:
+def get_matches(reela, reelb, reelc):
     ''' Returns 3 for all 3 match, 2 for 2 alike, and 0 for none alike. '''
+    reels = [reela, reelb, reelc]
+    unique = []
+    for value in reels:
+        if value not in unique:
+            unique.append(value)
+    if len(unique) == 3:
+        return 0
+    elif len(unique) == 2:
+        return 2
+    elif len(unique) == 1:
+        return 3
 
-    return 0
-
-def get_bank() -> int:
+def get_bank():
     ''' Returns how many chips the user wants to play with.  Loops until a value greater than 0 and less than 101 '''
-
-    return 0
+    stacks = int(input('How many chips do you want to start with? ==> '))
+    while stacks <= 0 or stacks > 100:
+        if stacks <= 0:
+            stacks = int(input('Too low a value, you can only choose 1 - 100 chips \nHow many chips do you want to start with? ==> '))
+        elif stacks > 100:
+            stacks = int(input('Too high a value, you can only choose 1 - 100 chips \nHow many chips do you want to start with? ==> '))
+    return stacks
 
 def get_payout(wager, matches):
     ''' Returns how much the payout is.. 10 times the wager if 3 matched, 3 times the wager if 2 match, and negative wager if 0 match '''
-    return wager * -1     
+    if matches == 0:
+        payout = -(wager)
+    elif matches == 2:
+        payout = wager * 2
+    elif matches == 3:
+        payout = wager * 9
+    return payout    
 
 
 if __name__ == "__main__":
@@ -68,7 +95,13 @@ if __name__ == "__main__":
 
         bank = get_bank()
 
-        while True:  # Replace with condition for if they still have money.
+        original_bank = bank
+
+        while bank > 0:  # Replace with condition for if they still have money.
+
+            max_bank = bank
+
+            spins = 0
             
             wager = get_wager(bank)
 
@@ -77,6 +110,9 @@ if __name__ == "__main__":
             matches = get_matches(reel1, reel2, reel3)
             payout = get_payout(wager, matches)
             bank = bank + payout
+            if bank > max_bank:
+                max_bank = bank
+            spins += 1
 
             print("Your spin", reel1, reel2, reel3)
             print("You matched", matches, "reels")
@@ -84,6 +120,6 @@ if __name__ == "__main__":
             print("Current bank", bank)
             print()
            
-        print("You lost all", 0, "in", 0, "spins")
-        print("The most chips you had was", 0)
+        print(f'You lost all {original_bank} in {spins} spins')
+        print("The most chips you had was", max_bank)
         playing = play_again()
